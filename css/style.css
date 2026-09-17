@@ -1,0 +1,102 @@
+/* ПРОТОКОЛ НИША — интерфейс носителя */
+:root{
+  --ink:#d8e6ee;
+  --dim:#6d8496;
+  --cyan:#5ff0ff;
+  --magenta:#ff4fd8;
+  --amber:#ffc24a;
+  --bad:#ff3b53;
+  --bg:#05070b;
+  --panel:rgba(6,11,16,.72);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;color:var(--ink);overflow:hidden;
+  font-family:"JetBrains Mono","DejaVu Sans Mono",Consolas,"Liberation Mono",monospace;
+  -webkit-font-smoothing:antialiased;}
+body{display:flex;align-items:center;justify-content:center}
+
+#stage{position:relative;width:100vw;height:100vh;background:var(--bg);overflow:hidden}
+#view,#hud{position:absolute;inset:0;width:100%;height:100%;display:block}
+#view{image-rendering:pixelated;image-rendering:crisp-edges}
+#hud{pointer-events:none}
+
+/* ---------- экраны ---------- */
+#screens{position:absolute;inset:0;pointer-events:none}
+.screen{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;padding:6vh 8vw;pointer-events:auto;text-align:center;
+  background:radial-gradient(circle at 50% 40%,rgba(10,18,26,.88),rgba(2,4,7,.97) 70%);
+  animation:fadein .25s ease-out;
+}
+.screen[hidden]{display:none}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+
+.glyph{font-size:12px;letter-spacing:.42em;color:var(--cyan);opacity:.75}
+h1.title{font-size:min(19vw,148px);letter-spacing:.14em;line-height:.92;font-weight:700;
+  color:#f2feff;text-shadow:0 0 22px rgba(95,240,255,.6),0 0 70px rgba(95,240,255,.25),0 0 120px rgba(255,79,216,.22)}
+h2{font-size:clamp(22px,4vw,42px);letter-spacing:.24em;color:#eafcff}
+h2.bad{color:var(--bad);text-shadow:0 0 24px rgba(255,59,83,.5)}
+.tagline{font-size:13px;letter-spacing:.22em;opacity:.68;max-width:64ch}
+.foot{position:absolute;bottom:22px;font-size:11px;letter-spacing:.2em;opacity:.4}
+
+[data-glitch]{position:relative}
+[data-glitch]::before,[data-glitch]::after{
+  content:attr(data-glitch);position:absolute;inset:0;opacity:.6;pointer-events:none}
+[data-glitch]::before{color:var(--magenta);animation:gx 2.9s infinite steps(2)}
+[data-glitch]::after{color:var(--cyan);animation:gy 3.7s infinite steps(2)}
+@keyframes gx{0%,92%{transform:none;opacity:0}93%{transform:translate(-4px,2px);opacity:.75}100%{transform:none;opacity:0}}
+@keyframes gy{0%,88%{transform:none;opacity:0}89%{transform:translate(5px,-3px);opacity:.7}100%{transform:none;opacity:0}}
+
+.menu{display:flex;flex-direction:column;gap:10px;min-width:280px}
+.menu.row{flex-direction:row;flex-wrap:wrap;justify-content:center}
+.btn{
+  pointer-events:auto;cursor:pointer;font:inherit;font-size:13px;letter-spacing:.24em;
+  padding:12px 26px;color:var(--ink);background:rgba(12,20,28,.6);
+  border:1px solid rgba(95,240,255,.28);border-left:3px solid rgba(95,240,255,.55);
+  transition:background .12s,color .12s,border-color .12s,transform .12s;
+}
+.btn:hover,.btn:focus-visible{background:rgba(95,240,255,.14);border-color:var(--cyan);color:#fff;
+  transform:translateX(3px);outline:none}
+.btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+
+.narrative .lines{max-width:66ch;display:flex;flex-direction:column;gap:12px;
+  font-size:14px;line-height:1.7;letter-spacing:.04em;opacity:.9;text-align:left}
+.narrative .lines p{border-left:1px solid rgba(95,240,255,.22);padding-left:14px}
+.narrative .lines p.echo{color:var(--magenta);opacity:.85;font-style:italic;
+  border-left-color:rgba(255,79,216,.4)}
+.narrative .lines p.host{color:var(--amber);border-left-color:rgba(255,194,74,.4)}
+.stats{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;font-size:12px;letter-spacing:.16em;opacity:.7}
+.stats b{color:var(--cyan);font-weight:600}
+
+.mission-list{display:flex;flex-direction:column;gap:8px;min-width:min(560px,80vw)}
+.mission{display:flex;align-items:center;gap:16px;padding:12px 18px;cursor:pointer;
+  border:1px solid rgba(95,240,255,.18);background:rgba(10,16,22,.6);text-align:left;color:inherit;font:inherit}
+.mission:hover:not(:disabled){border-color:var(--cyan);background:rgba(95,240,255,.1)}
+.mission:disabled{opacity:.32;cursor:not-allowed}
+.mission .no{color:var(--cyan);font-size:12px;letter-spacing:.2em}
+.mission .nm{flex:1;letter-spacing:.16em;font-size:14px}
+.mission .st{font-size:11px;letter-spacing:.18em;opacity:.6}
+
+.settings{display:flex;flex-direction:column;gap:10px;min-width:min(520px,80vw)}
+.setting{display:flex;align-items:center;gap:14px;padding:10px 16px;
+  border:1px solid rgba(95,240,255,.16);background:rgba(10,16,22,.5)}
+.setting .lbl{flex:1;text-align:left;font-size:12px;letter-spacing:.18em}
+.setting .val{min-width:96px;font-size:12px;color:var(--cyan);letter-spacing:.14em}
+.setting input[type=range]{width:180px;accent-color:#5ff0ff;background:transparent}
+.setting button{font:inherit;font-size:11px;letter-spacing:.16em;padding:6px 14px;cursor:pointer;
+  color:var(--ink);background:rgba(12,20,28,.7);border:1px solid rgba(95,240,255,.3)}
+
+.doc{max-width:70ch;text-align:left;font-size:13px;line-height:1.75;display:flex;flex-direction:column;gap:12px;opacity:.9}
+.doc b{color:var(--cyan);font-weight:600}
+.doc .keys{margin-top:6px;font-size:11px;letter-spacing:.14em;opacity:.6}
+
+#lock-hint{position:absolute;left:50%;bottom:10%;transform:translateX(-50%);
+  font-size:12px;letter-spacing:.3em;color:var(--cyan);opacity:.7;pointer-events:none;
+  animation:pulse 1.8s ease-in-out infinite}
+#lock-hint[hidden]{display:none}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:.85}}
+
+/* полосы развёртки поверх всего */
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);
+  mix-blend-mode:multiply;opacity:.55}
